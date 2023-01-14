@@ -1,0 +1,156 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt 
+import seaborn as sns
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[2]:
+
+
+df=pd.read_csv(r"C:\Users\harin\Downloads\TravelInsurancePrediction.csv")
+df.shape
+
+
+# In[3]:
+
+
+df.head()
+
+
+# In[4]:
+
+
+df.drop(columns=["Unnamed: 0"], inplace=True)
+
+
+# In[5]:
+
+
+df.isnull().sum()
+
+
+# In[6]:
+
+
+df.replace('-','nan')
+df.replace('na','nan')
+
+
+# In[7]:
+
+
+df.isnull().sum()
+
+
+# In[8]:
+
+
+df.info()
+
+
+# In[9]:
+
+
+df["TravelInsurance"]= df["TravelInsurance"].map({0: "not purchased", 1: "purchased"})
+
+
+# In[10]:
+
+
+df.skew()
+
+
+# In[11]:
+
+
+cor=df.corr()
+cor
+
+
+# In[12]:
+
+
+import plotly.express as px
+df=df
+figure=px.histogram(df, x="Age", color= "TravelInsurance", title= "Factors affecting purchase of travel insurance: age")
+figure.show()
+
+
+# In[13]:
+
+
+import plotly.express as px
+df=df
+figure=px.histogram(df, x="Employment Type", color= "TravelInsurance", title= "Factors affecting purchase of travel insurance: age")
+figure.show()
+
+
+# In[14]:
+
+
+import plotly.express as px
+df=df
+figure=px.histogram(df, x="AnnualIncome", color= "TravelInsurance", title= "Factors affecting purchase of travel insurance: age")
+figure.show()
+
+
+# In[15]:
+
+
+df["GraduateOrNot"]=df["GraduateOrNot"].map({"No":0, "Yes":1})
+df["FrequentFlyer"]=df["FrequentFlyer"].map({"No":0, "Yes":1})
+df["EverTravelledAbroad"]=df["EverTravelledAbroad"].map({"No":0, "Yes":1})
+
+
+# In[16]:
+
+
+x=np.array(df[["Age","GraduateOrNot", "AnnualIncome","FamilyMembers", "ChronicDiseases","FrequentFlyer","EverTravelledAbroad"]])
+y=np.array(df[["TravelInsurance"]])
+
+
+# In[17]:
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+xtrain, xtest, ytrain, ytest= train_test_split(x,y, test_size=0.10, random_state=42)
+model = DecisionTreeClassifier()
+
+
+# In[18]:
+
+
+model.fit(xtrain, ytrain)
+
+
+# In[19]:
+
+
+predictions=model.predict(xtest)
+
+
+# In[20]:
+
+
+predictions
+
+
+# In[23]:
+
+
+model.score(xtest,predictions)
+
+
+# In[ ]:
+
+
+
+
